@@ -3,11 +3,15 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  useHistory
 } from "react-router-dom";
 import './App.css';
 import { Helmet } from "react-helmet";
 import * as Sentry from '@sentry/browser';
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-171111046-1');
 
 Sentry.init({
   dsn: "https://c3272801c4064ddca53820c63c2b89e2@o381216.ingest.sentry.io/5253700",
@@ -15,8 +19,11 @@ Sentry.init({
 });
 
 function App() {
+
+
   return (
     <Router>
+      <Init />
       <div>
         <nav>
           <ul>
@@ -54,7 +61,19 @@ const handleClick = () => {
   throw new Error('This is an error')
 }
 
-function Home() {
+const Init = () => {
+  let history = useHistory();
+
+  history.listen((location) => {
+    ReactGA.set({ page: location.pathname });
+    ReactGA.pageview(location.pathname)
+  }
+  );
+
+  return (null);
+}
+
+function Home(props) {
   return <>
     <Helmet>
       <title>Home</title>
